@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"strings"
-
 	"github.com/gocolly/colly"
+	"strings"
+	"unicode/utf8"
 )
 
 type WallpaperStruct struct {
@@ -25,23 +25,23 @@ func main() {
 
 		if trimmedTitle := strings.TrimSpace(title); trimmedTitle != "" {
 			// Modify the title for the URL
-			modifiedTitle := ""
-			for _, letter := range title {
-				if letter == ' ' {
-					modifiedTitle += "-"
-				} else {
-					modifiedTitle += string(letter)
-				}
-			}
-			modifiedTitle = strings.ToLower(modifiedTitle)
+			modifiedTitle := strings.ToLower(strings.ReplaceAll(title, " ", "-"))
 
 			// Construct the modified URL
 			modifiedURL := fmt.Sprintf(urlTemplate, modifiedTitle)
 
+			// Safely remove the last 10 characters if the string is long enough
+			if utf8.RuneCountInString(modifiedTitle) > 10 {
+				modifiedTitle = string([]rune(modifiedTitle)[:len([]rune(modifiedTitle))-10])
+			}
+
 			// Create a WallpaperStruct and append it to the wallpapers slice
 			wallpapers = append(wallpapers, WallpaperStruct{
-				title: title,
-				url:   modifiedURL,
+				title:    title,
+				url:      modifiedURL,
+				HD_1080p: "https://hdqwalls.com/wallpaper/1920x1080/" + modifiedTitle,
+				HD_1440p: "https://hdqwalls.com/wallpaper/2560x1440/" + modifiedTitle,
+				HD_2160p: "https://hdqwalls.com/wallpaper/3840x2160/" + modifiedTitle,
 			})
 		}
 	})
@@ -56,6 +56,6 @@ func main() {
 	// Print the wallpapers
 	fmt.Println("Wallpapers:")
 	for _, wallpaper := range wallpapers {
-		fmt.Printf("Title: %s\nURL: %s\n\n", wallpaper.title, wallpaper.url)
+		fmt.Printf("Title: %s\nURL: %s\n1080p: %s\n1440p: %s\n4k: %s\n", wallpaper.title, wallpaper.url, wallpaper.HD_1080p, wallpaper.HD_1440p, wallpaper.HD_2160p)
 	}
 }
