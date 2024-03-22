@@ -11,42 +11,6 @@ type WallpaperStruct struct {
 	title, url, HD_1080p, HD_1440p, HD_2160p string
 }
 
-func getDownload(link string) string {
-	// Instantiate a new Collector
-	c := colly.NewCollector()
-
-	// Create a channel to communicate the found link
-	linkChan := make(chan string, 1) // Buffered channel with a capacity of 1
-
-	c.OnHTML("img.d_img_holder", func(e *colly.HTMLElement) {
-		downloadLink := e.Attr("src")
-		fmt.Println("Checking: " + link + "\n\tGot: \n\t\t" + downloadLink)
-		linkChan <- downloadLink // Send the found link back through the channel
-	})
-
-	c.Visit(link)
-
-	// Wait to receive the link from the channel
-	result := <-linkChan
-	close(linkChan) // Close the channel
-
-	return result
-}
-
-func removeDuplicates(wallpapers []WallpaperStruct) []WallpaperStruct {
-	seen := make(map[string]bool)
-	var uniqueWallpapers []WallpaperStruct
-
-	for _, wallpaper := range wallpapers {
-		if _, ok := seen[wallpaper.url]; !ok {
-			seen[wallpaper.url] = true
-			uniqueWallpapers = append(uniqueWallpapers, wallpaper)
-		}
-	}
-
-	return uniqueWallpapers
-}
-
 func main() {
 	// Instantiate a new Collector
 	c := colly.NewCollector()
@@ -94,8 +58,8 @@ func main() {
 	wallpapers = removeDuplicates(wallpapers)
 
 	// Print the wallpapers
-	fmt.Println("Wallpapers:")
+	/* fmt.Println("Wallpapers:")
 	for _, wallpaper := range wallpapers {
 		fmt.Printf("Title: %s\nURL: %s\n1080p: %s\n1440p: %s\n4k: %s\n", wallpaper.title, wallpaper.url, wallpaper.HD_1080p, wallpaper.HD_1440p, wallpaper.HD_2160p)
-	}
+	} */
 }
