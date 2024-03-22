@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -135,4 +137,43 @@ func listJPGFiles(dir string, prefix string) ([]string, error) {
 	}
 
 	return files, nil
+}
+
+// downloadImage downloads an image from the specified URL and saves it to a specific path.
+func downloadImage(imageURL, savePath string) error {
+	// Check if the directory exists, if not, create it
+	dir := filepath.Dir(savePath)
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		if err := os.MkdirAll(dir, 0755); err != nil {
+			return err
+		}
+	}
+
+	// Check if the file already exists
+	if _, err := os.Stat(savePath); err == nil {
+		return fmt.Errorf("file already exists at %s", savePath)
+	}
+
+	// Make a GET request to fetch the image
+	response, err := http.Get(imageURL)
+	if err != nil {
+		return err
+	}
+	defer response.Body.Close()
+
+	// Check that the GET request was successful
+	if response.StatusCode != 200 {
+		return fmt.Errorf("received non-200 response code")
+	}
+
+	// Create a new file in the specified save path
+	file, err := os.Create(savePath)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	// Copy the response body to the file
+	_, err = io.Copy(file, response.Body)
+	return err
 }

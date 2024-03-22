@@ -8,7 +8,7 @@ import (
 )
 
 type WallpaperStruct struct {
-	title, url, HD_1080p, HD_1440p, HD_2160p string
+	title, modifiedTitle, url, HD_1080p, HD_1440p, HD_2160p string
 }
 
 func main() {
@@ -38,11 +38,12 @@ func main() {
 
 			// Create a WallpaperStruct and append it to the wallpapers slice
 			wallpapers = append(wallpapers, WallpaperStruct{
-				title:    title,
-				url:      modifiedURL,
-				HD_1080p: getDownload("https://hdqwalls.com/wallpaper/1920x1080/" + modifiedTitle),
-				HD_1440p: getDownload("https://hdqwalls.com/wallpaper/2560x1440/" + modifiedTitle),
-				HD_2160p: getDownload("https://hdqwalls.com/wallpaper/3840x2160/" + modifiedTitle),
+				title:         title,
+				modifiedTitle: modifiedTitle,
+				url:           modifiedURL,
+				HD_1080p:      getDownload("https://hdqwalls.com/wallpaper/1920x1080/" + modifiedTitle),
+				HD_1440p:      getDownload("https://hdqwalls.com/wallpaper/2560x1440/" + modifiedTitle),
+				HD_2160p:      getDownload("https://hdqwalls.com/wallpaper/3840x2160/" + modifiedTitle),
 			})
 		}
 	})
@@ -57,7 +58,13 @@ func main() {
 	// Filter duplicates based on URL
 	wallpapers = removeDuplicates(wallpapers)
 
-	Prompt()
+	// Convert []WallpaperStruct to slice for prompt
+	titles := make([]string, len(wallpapers))
+	for i, wallpaperTitle := range wallpapers {
+		titles[i] = wallpaperTitle.title
+	}
+
+	Prompt("Select a Wallpaper:", titles, wallpapers)
 
 	// Print the wallpapers
 	/* fmt.Println("Wallpapers:")
