@@ -57,6 +57,8 @@ func main() {
 	// Filter duplicates based on URL
 	wallpapers = removeDuplicates(wallpapers)
 
+	Prompt()
+
 	// Print the wallpapers
 	/* fmt.Println("Wallpapers:")
 	for _, wallpaper := range wallpapers {
