@@ -65,10 +65,4 @@ func main() {
 	}
 
 	Prompt("Select a Wallpaper:", titles, wallpapers)
-
-	// Print the wallpapers
-	/* fmt.Println("Wallpapers:")
-	for _, wallpaper := range wallpapers {
-		fmt.Printf("Title: %s\nURL: %s\n1080p: %s\n1440p: %s\n4k: %s\n", wallpaper.title, wallpaper.url, wallpaper.HD_1080p, wallpaper.HD_1440p, wallpaper.HD_2160p)
-	} */
 }

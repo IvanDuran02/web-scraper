@@ -15,6 +15,7 @@ func (w WallpaperStruct) Find(title string, wallpapers []WallpaperStruct) (Wallp
 }
 
 func Prompt(promptLabel string, options []string, wallpapers []WallpaperStruct) {
+
 	prompt := promptui.Select{
 		Label: promptLabel,
 		Items: options,
@@ -30,6 +31,7 @@ func Prompt(promptLabel string, options []string, wallpapers []WallpaperStruct) 
 
 	switch promptLabel {
 	case "Select a Wallpaper:":
+		var filePath string
 		var selectedWallpaper WallpaperStruct
 		var found bool
 		for _, wallpaper := range wallpapers {
@@ -50,24 +52,44 @@ func Prompt(promptLabel string, options []string, wallpapers []WallpaperStruct) 
 			}
 			switch result {
 			case "1080p":
-				filePath := fmt.Sprintf("./DownloadedWallpapers/" + selectedWallpaper.modifiedTitle + ".jpg")
+				filePath = fmt.Sprintf("./DownloadedWallpapers/" + selectedWallpaper.modifiedTitle + ".jpg")
 				err := downloadImage(selectedWallpaper.HD_1080p, filePath)
 				if err != nil {
 					fmt.Print("Error occurred during image download: ", err)
 				}
 			case "1440p":
-				filePath := fmt.Sprintf("./DownloadedWallpapers/" + selectedWallpaper.modifiedTitle + ".jpg")
+				filePath = fmt.Sprintf("./DownloadedWallpapers/" + selectedWallpaper.modifiedTitle + ".jpg")
 				err := downloadImage(selectedWallpaper.HD_1440p, filePath)
 				if err != nil {
 					fmt.Print("Error occurred during image download: ", err)
 				}
 			case "2160p":
-				filePath := fmt.Sprintf("./DownloadedWallpapers/" + selectedWallpaper.modifiedTitle + ".jpg")
+				filePath = fmt.Sprintf("./DownloadedWallpapers/" + selectedWallpaper.modifiedTitle + ".jpg")
 				err := downloadImage(selectedWallpaper.HD_2160p, filePath)
 				if err != nil {
 					fmt.Print("Error occurred during image download: ", err)
 				}
 			}
+
+			displays := FindDisplays()
+			displayPrompt := promptui.Select{
+				Label: "Select a monitor",
+				Items: displays,
+			}
+			_, selectedDisplay, err := displayPrompt.Run()
+			if err != nil {
+				fmt.Println("Prompt failed:", err)
+				return
+			}
+
+			head := 0
+			for i, display := range displays {
+				if selectedDisplay == display {
+					head = i
+				}
+			}
+
+			ChangeWallpaper(filePath, head)
 		} else {
 			fmt.Println("Wallpaper not found")
 		}
