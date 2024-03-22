@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/gocolly/colly"
 	"strings"
 	"unicode/utf8"
+
+	"github.com/gocolly/colly"
+	"github.com/manifoldco/promptui"
 )
 
 type WallpaperStruct struct {
@@ -47,11 +49,34 @@ func main() {
 			})
 		}
 	})
+	categories := []string{
+		"Popular Wallpapers", "Superheros", "Games", "Artists", "Movies", "Celebrities", "Cars",
+		"Nature", "TV Shows", "Girls", "Abstract", "Anime", "Music",
+		"Photography", "Computer", "Animals", "Digital Universe", "World",
+		"Bikes", "Fantasy Girls", "Flowers", "Love", "Birds", "Sports", "Other",
+	}
+
+	categoryPrompt := promptui.Select{
+		Label: "Select a Category:",
+		Items: categories,
+	}
+
+	_, result, err := categoryPrompt.Run()
+	if err != nil {
+		fmt.Println("Error selecting category: ", err)
+		return
+	}
+	if result != categories[0] {
+		result = "category/" + strings.ToLower(strings.ReplaceAll(result, " ", "-")) + "-wallpapers"
+	} else {
+		result = strings.ToLower(strings.ReplaceAll(categories[0], " ", "-"))
+	}
 
 	// Visit the URL
-	err := c.Visit("https://hdqwalls.com/category/anime-wallpapers")
+	link := fmt.Sprintf("https://hdqwalls.com/%s", result)
+	err = c.Visit(link)
 	if err != nil {
-		fmt.Println("Error visiting the website:", err)
+		fmt.Println("Error visiting the website:", link, err)
 		return
 	}
 
