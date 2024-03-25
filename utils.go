@@ -96,7 +96,7 @@ func ChangeWallpaper(file string, head int) {
 
 	// Create the exec.Cmd object
 	cmd := exec.Command(command, args...)
-	fmt.Println(cmd)
+	// fmt.Println(cmd)
 
 	// Set the command's stdout to the current process's stdout
 	cmd.Stdout = os.Stdout

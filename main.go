@@ -17,6 +17,8 @@ func main() {
 	// Instantiate a new Collector
 	c := colly.NewCollector()
 
+	c.CacheDir = "./cache" // Set cache directory
+
 	// Define a slice to store the wallpapers
 	var wallpapers []WallpaperStruct
 	urlTemplate := "https://hdqwalls.com/%s"
@@ -50,7 +52,7 @@ func main() {
 		}
 	})
 	categories := []string{
-		"Popular Wallpapers", "Superheros", "Games", "Artists", "Movies", "Celebrities", "Cars",
+		"Popular Wallpapers", "Superheroes", "Games", "Artists", "Movies", "Celebrities", "Cars",
 		"Nature", "TV Shows", "Girls", "Abstract", "Anime", "Music",
 		"Photography", "Computer", "Animals", "Digital Universe", "World",
 		"Bikes", "Fantasy Girls", "Flowers", "Love", "Birds", "Sports", "Other",
